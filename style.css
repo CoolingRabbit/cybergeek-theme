@@ -393,32 +393,9 @@ body::before {
 
 /* Scrollable content area - fits ~5 cards */
 .crt-content {
-  max-height: 900px;
-  overflow-y: auto;
-  overflow-x: hidden;
   padding: var(--space-xl);
   position: relative;
   z-index: 5;
-  scrollbar-width: thin;
-  scrollbar-color: var(--border) var(--bg-secondary);
-}
-
-.crt-content::-webkit-scrollbar {
-  width: 8px;
-}
-
-.crt-content::-webkit-scrollbar-track {
-  background: var(--bg-secondary);
-  border-radius: 4px;
-}
-
-.crt-content::-webkit-scrollbar-thumb {
-  background: var(--border);
-  border-radius: 4px;
-}
-
-.crt-content::-webkit-scrollbar-thumb:hover {
-  background: var(--text-muted);
 }
 
 /* Monitor brand label */
