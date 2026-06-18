@@ -1278,6 +1278,145 @@ body::before {
   text-shadow: 0 1px 2px rgba(0,0,0,0.5);
 }
 
+/* Also style Typecho's prev/next links */
+.pagination-keyboard a.next,
+.pagination-keyboard a.prev {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 72px;
+  height: 56px;
+  padding: 0 20px;
+  border-radius: 10px;
+  font-size: 1.2em;
+  font-weight: 700;
+  font-family: 'SF Mono', 'Fira Code', 'Courier New', 'Consolas', monospace;
+  background: linear-gradient(180deg, #2d3139 0%, #242830 100%);
+  border: 1px solid #3a404d;
+  border-bottom: 5px solid #1a1d23;
+  color: #8b92a8;
+  text-decoration: none;
+  transition: all 0.08s cubic-bezier(0.4, 0, 0.2, 1);
+  user-select: none;
+  cursor: pointer;
+  box-shadow: 
+    0 4px 8px rgba(0,0,0,0.3),
+    inset 0 1px 0 rgba(255,255,255,0.08);
+  text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+}
+
+.pagination-keyboard a.next:hover,
+.pagination-keyboard a.prev:hover {
+  transform: translateY(-2px);
+  background: linear-gradient(180deg, #3a404d 0%, #2d3139 100%);
+  border-color: #4a5160;
+  color: #a0a8c0;
+  box-shadow: 
+    0 6px 12px rgba(0,0,0,0.4),
+    inset 0 1px 0 rgba(255,255,255,0.12);
+}
+
+.pagination-keyboard a.next:active,
+.pagination-keyboard a.prev:active {
+  transform: translateY(2px);
+  border-bottom-width: 2px;
+  box-shadow: 
+    0 2px 4px rgba(0,0,0,0.3),
+    inset 0 1px 0 rgba(255,255,255,0.05);
+}
+
+/* === Realistic arrow icons for pagination === */
+.pagination-keyboard a.next,
+.pagination-keyboard a.prev,
+.page-key-nav.page-key-disabled {
+  font-size: 0 !important;
+  color: transparent !important;
+}
+
+/* Ensure all arrow containers are positioned */
+.pagination-keyboard a.next,
+.pagination-keyboard a.prev,
+.pagination-keyboard .page-key-nav.page-key-disabled {
+  position: relative;
+}
+
+/* Left arrow: triangle head */
+.pagination-keyboard a.prev::before,
+.page-key-nav.page-key-disabled:first-child::before {
+  content: '';
+  position: absolute;
+  left: 38%;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-top: 6px solid transparent;
+  border-bottom: 6px solid transparent;
+  border-right: 8px solid #a0a8c0;
+}
+
+/* Left arrow: line body */
+.pagination-keyboard a.prev::after,
+.page-key-nav.page-key-disabled:first-child::after {
+  content: '';
+  position: absolute;
+  left: 46%;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 8px;
+  height: 2px;
+  background: #a0a8c0;
+  border-radius: 1px;
+}
+
+/* Right arrow: line body */
+.pagination-keyboard a.next::before,
+.page-key-nav.page-key-disabled:last-of-type::before {
+  content: '';
+  position: absolute;
+  left: 40%;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 8px;
+  height: 2px;
+  background: #a0a8c0;
+  border-radius: 1px;
+}
+
+/* Right arrow: triangle head */
+.pagination-keyboard a.next::after,
+.page-key-nav.page-key-disabled:last-of-type::after {
+  content: '';
+  position: absolute;
+  left: 54%;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-top: 6px solid transparent;
+  border-bottom: 6px solid transparent;
+  border-left: 8px solid #a0a8c0;
+}
+
+/* Hover - separate rules for triangle and line */
+.pagination-keyboard a.prev:hover::before,
+.page-key-nav.page-key-disabled:first-child:hover::before {
+  border-right-color: #c0c8e0;
+}
+.pagination-keyboard a.prev:hover::after,
+.page-key-nav.page-key-disabled:first-child:hover::after {
+  background: #c0c8e0;
+}
+.pagination-keyboard a.next:hover::before,
+.page-key-nav.page-key-disabled:last-of-type:hover::before {
+  background: #c0c8e0;
+}
+.pagination-keyboard a.next:hover::after,
+.page-key-nav.page-key-disabled:last-of-type:hover::after {
+  border-left-color: #c0c8e0;
+}
+
 .page-key::before {
   content: '';
   position: absolute;

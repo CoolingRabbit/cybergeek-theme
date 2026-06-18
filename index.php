@@ -81,7 +81,7 @@ $this->need('header.php');
         ?>
         <div class="pagination-keyboard">
             <?php if ($currentPage > 1): ?>
-                <a href="<?php $this->pageLink($currentPage - 1); ?>" class="page-key page-key-nav">←</a>
+                <?php $this->pageLink('←', 'prev', array('class' => 'page-key page-key-nav')); ?>
             <?php else: ?>
                 <span class="page-key page-key-nav page-key-disabled">←</span>
             <?php endif; ?>
@@ -89,7 +89,7 @@ $this->need('header.php');
             <span class="page-key page-key-current"><?php echo $currentPage; ?></span>
             
             <?php if ($currentPage < $totalPage): ?>
-                <a href="<?php $this->pageLink($currentPage + 1); ?>" class="page-key page-key-nav">→</a>
+                <?php $this->pageLink('→', 'next', array('class' => 'page-key page-key-nav')); ?>
             <?php else: ?>
                 <span class="page-key page-key-nav page-key-disabled">→</span>
             <?php endif; ?>
