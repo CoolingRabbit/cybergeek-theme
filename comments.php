@@ -1,6 +1,6 @@
 <?php
 /**
- * CyberGeek Theme - Comments Template (Geek Style + Warm Colors)
+ * CyberGeek v2 Theme - Comments Template
  */
 if (!defined('__TYPECHO_ROOT_DIR__')) exit;
 ?>
@@ -27,7 +27,7 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit;
 
             <form method="post" action="<?php $this->commentUrl() ?>" id="comment-form" role="form">
                 <?php if ($this->user->hasLogin()): ?>
-                    <p style="margin-bottom: var(--space-md); color: var(--text-muted); font-family: var(--font-sans); font-size: 0.9em;">
+                    <p style="margin-bottom: var(--space-md); color: var(--text-muted); font-size: 0.88rem;">
                         <?php _e('登录身份'); ?>: <a href="<?php $this->options->profileUrl(); ?>"><?php $this->user->screenName(); ?></a>.
                         <a href="<?php $this->options->logoutUrl(); ?>" title="Logout"><?php _e('退出'); ?> &raquo;</a>
                     </p>
@@ -55,6 +55,6 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit;
             </form>
         </div>
     <?php else: ?>
-        <p style="color: var(--text-muted); text-align: center; padding: var(--space-lg); font-family: var(--font-sans); font-style: italic;"><?php _e('评论已关闭'); ?></p>
+        <p style="color: var(--text-muted); text-align: center; padding: var(--space-lg); font-family: var(--font-mono); font-size: 0.85rem;"><?php _e('// 评论已关闭'); ?></p>
     <?php endif; ?>
 </div>

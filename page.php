@@ -1,6 +1,6 @@
 <?php
 /**
- * CyberGeek Theme - Page Template (Geek Style + Warm Colors)
+ * CyberGeek v2 Theme - Page Template
  */
 if (!defined('__TYPECHO_ROOT_DIR__')) exit;
 $this->need('header.php');

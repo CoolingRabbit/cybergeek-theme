@@ -1,6 +1,6 @@
 <?php
 /**
- * CyberGeek Theme Functions - Retro Newspaper Edition
+ * CyberGeek v2 Theme Functions
  * Typecho 1.3.0 Compatible
  */
 
@@ -46,18 +46,14 @@ function getCurrentUserName() {
  * @return string
  */
 function getExcerpt($archive, $length = 120) {
-    // Always use content to build excerpt, avoiding pre-generated excerpt with HTML
     $content = $archive->content;
     if (empty($content)) {
         $content = $archive->excerpt;
     }
-    // Decode HTML entities first (e.g. &lt;h2&gt; -> <h2>)
+    // 先解码 HTML 实体，再去标签，避免摘要中出现残留标记
     $content = html_entity_decode($content, ENT_QUOTES | ENT_HTML5, 'UTF-8');
-    // Strip all HTML tags
     $content = strip_tags($content);
-    // Remove any remaining tag-like patterns as fallback
     $content = preg_replace('/<[^>]*>/', '', $content);
-    // Normalize whitespace
     $content = preg_replace('/\s+/', ' ', $content);
     $content = trim($content);
     if (mb_strlen($content, 'UTF-8') > $length) {
@@ -78,6 +74,29 @@ function getThumbnail($archive) {
         return $matches[1][0];
     }
     return null;
+}
+
+/**
+ * 估算阅读时长（v2 新增）
+ * 中文约 400 字/分钟，英文按词数折算约 200 词/分钟
+ * @param Widget_Archive $archive
+ * @return string
+ */
+function getReadingTime($archive) {
+    $content = html_entity_decode($archive->content, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+    $content = strip_tags($content);
+
+    // 统计中日韩字符数
+    preg_match_all('/[\x{4E00}-\x{9FFF}\x{3040}-\x{30FF}\x{AC00}-\x{D7AF}]/u', $content, $cjk);
+    $cjkCount = count($cjk[0]);
+
+    // 统计英文单词数
+    $plain = preg_replace('/[\x{4E00}-\x{9FFF}\x{3040}-\x{30FF}\x{AC00}-\x{D7AF}]/u', ' ', $content);
+    $wordCount = str_word_count($plain);
+
+    $minutes = (int) ceil($cjkCount / 400 + $wordCount / 200);
+    if ($minutes < 1) $minutes = 1;
+    return $minutes . ' 分钟读完';
 }
 
 /**

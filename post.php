@@ -1,6 +1,6 @@
 <?php
 /**
- * CyberGeek Theme - Post Template (Geek Style + Warm Colors)
+ * CyberGeek v2 Theme - Post Template
  */
 if (!defined('__TYPECHO_ROOT_DIR__')) exit;
 $this->need('header.php');
@@ -12,11 +12,13 @@ $this->need('header.php');
             <h1 class="post-title"><?php $this->title(); ?></h1>
             <div class="post-meta">
                 <time datetime="<?php $this->date('c'); ?>"><?php $this->date('Y-m-d H:i'); ?></time>
-                <span class="separator">·</span>
+                <span class="separator">/</span>
                 <span><?php $this->category(','); ?></span>
-                <span class="separator">·</span>
+                <span class="separator">/</span>
                 <span><?php $this->author(); ?></span>
-                <span class="separator">·</span>
+                <span class="separator">/</span>
+                <span><?php echo getReadingTime($this); ?></span>
+                <span class="separator">/</span>
                 <span><?php $this->commentsNum('0 评论', '1 评论', '%d 评论'); ?></span>
             </div>
         </header>

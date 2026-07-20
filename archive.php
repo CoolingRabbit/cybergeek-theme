@@ -1,6 +1,6 @@
 <?php
 /**
- * CyberGeek Theme - Archive Template (Geek Style + Warm Colors)
+ * CyberGeek v2 Theme - Archive Template
  */
 if (!defined('__TYPECHO_ROOT_DIR__')) exit;
 $this->need('header.php');
@@ -8,6 +8,7 @@ $this->need('header.php');
 
 <div class="container">
     <header class="archive-header">
+        <p class="archive-eyebrow"><span class="prompt">$</span> ls -la</p>
         <h1 class="archive-title">
             <?php $this->archiveTitle(array(
                 'category'  =>  _t('分类 %s 下的文章'),
@@ -19,20 +20,20 @@ $this->need('header.php');
         <p class="archive-count">共 <?php echo $this->getTotal(); ?> 篇文章</p>
     </header>
 
-    <div class="archive-list">
+    <div class="archive-list post-list">
         <?php if ($this->have()): ?>
             <?php while ($this->next()): ?>
                 <?php
                 $thumb = getThumbnail($this);
-                $catColor = 'default';
+                $catName = '';
                 if (!empty($this->categories) && is_array($this->categories)) {
                     $firstCat = reset($this->categories);
-                    if (is_array($firstCat) && isset($firstCat['slug'])) {
-                        $catColor = getCategoryColor($firstCat['slug']);
+                    if (is_array($firstCat) && isset($firstCat['name'])) {
+                        $catName = $firstCat['name'];
                     }
                 }
                 ?>
-                <article class="post-card" data-category="<?php echo $catColor; ?>">
+                <article class="post-card">
                     <?php if ($thumb): ?>
                         <img src="<?php echo $thumb; ?>" alt="<?php $this->title(); ?>" class="post-card-thumbnail" loading="lazy">
                     <?php endif; ?>
@@ -40,30 +41,21 @@ $this->need('header.php');
                         <h2 class="post-card-title">
                             <a href="<?php $this->permalink(); ?>"><?php $this->title(); ?></a>
                         </h2>
-                        <p class="post-card-excerpt"><?php echo getExcerpt($this, 120); ?></p>
+                        <p class="post-card-excerpt"><?php echo getExcerpt($this, 110); ?></p>
                         <div class="post-card-meta">
                             <time datetime="<?php $this->date('c'); ?>"><?php $this->date('Y-m-d'); ?></time>
-                            <span class="separator">·</span>
-                            <span><?php $this->category(','); ?></span>
-                            <?php
-                            $tagStr = '';
-                            ob_start();
-                            $this->tags(',', true, '');
-                            $tagStr = ob_get_clean();
-                            if (!empty($tagStr)):
-                            ?>
-                                <span class="separator">·</span>
-                                <span><?php echo $tagStr; ?></span>
+                            <?php if ($catName): ?>
+                                <span class="separator">/</span>
+                                <span class="cat-tag"><?php echo $catName; ?></span>
                             <?php endif; ?>
+                            <span class="separator">/</span>
+                            <span><?php echo getReadingTime($this); ?></span>
                         </div>
-                        <a href="<?php $this->permalink(); ?>" class="post-card-readmore">阅读全文</a>
                     </div>
                 </article>
             <?php endwhile; ?>
         <?php else: ?>
-            <div class="post-card" style="text-align: center; padding: var(--space-2xl);">
-                <p style="color: var(--text-muted);"><?php _e('没有找到内容'); ?></p>
-            </div>
+            <div class="post-card-empty"><?php _e('// 没有找到内容'); ?></div>
         <?php endif; ?>
     </div>
 
