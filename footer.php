@@ -1,6 +1,7 @@
 <?php
 /**
- * CyberGeek Theme Footer - Geek Style + Warm Colors
+ * CyberGeek v2 MAX Theme Footer
+ * JS 仅用于必要交互：scramble 解码 / 逐行高亮行号 / 复制键帽 / LED 进度条
  */
 if (!defined('__TYPECHO_ROOT_DIR__')) exit;
 ?>
@@ -10,6 +11,7 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit;
 
     <footer class="site-footer">
         <div class="container">
+            <div class="footer-status"><span class="prompt">&gt;</span> session.active <span class="ok">[OK]</span> — uptime <?php echo date('Y'); ?> · cybergeek v2 max</div>
             <div class="footer-content">
                 <p>&copy; <?php echo date('Y'); ?> <a href="<?php $this->options->siteUrl(); ?>"><?php $this->options->title(); ?></a>. All rights reserved.</p>
                 <p class="footer-beian">
@@ -22,8 +24,7 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit;
         </div>
     </footer>
 
-    <!-- Highlight.js for syntax highlighting -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+    <!-- Highlight.js（样式由主题 style.css 内嵌配色接管） -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/php.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/javascript.min.js"></script>
@@ -39,33 +40,25 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit;
     (function() {
         'use strict';
 
-        // 导航栏滚动效果
+        var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        // ---- 导航栏滚动效果 ----
         var nav = document.getElementById('siteNav');
-        var scrollThreshold = 50;
-
         function updateNav() {
-            if (window.scrollY > scrollThreshold) {
-                nav.classList.add('scrolled');
-            } else {
-                nav.classList.remove('scrolled');
-            }
+            nav.classList.toggle('scrolled', window.scrollY > 50);
         }
-
         window.addEventListener('scroll', updateNav, { passive: true });
         updateNav();
 
-        // 移动端菜单切换
+        // ---- 移动端菜单 ----
         var menuToggle = document.getElementById('menuToggle');
         var navMenu = document.getElementById('navMenu');
-
         if (menuToggle && navMenu) {
             menuToggle.addEventListener('click', function() {
                 menuToggle.classList.toggle('active');
                 navMenu.classList.toggle('active');
             });
-
-            var menuLinks = navMenu.querySelectorAll('a');
-            menuLinks.forEach(function(link) {
+            navMenu.querySelectorAll('a').forEach(function(link) {
                 link.addEventListener('click', function() {
                     menuToggle.classList.remove('active');
                     navMenu.classList.remove('active');
@@ -73,26 +66,77 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit;
             });
         }
 
-        // 回到顶部按钮
+        // ---- 回到顶部 ----
         var backToTop = document.getElementById('backToTop');
-        var backToTopThreshold = 300;
-
         function updateBackToTop() {
-            if (window.scrollY > backToTopThreshold) {
-                backToTop.classList.add('visible');
-            } else {
-                backToTop.classList.remove('visible');
-            }
+            backToTop.classList.toggle('visible', window.scrollY > 300);
         }
-
         window.addEventListener('scroll', updateBackToTop, { passive: true });
         updateBackToTop();
-
         backToTop.addEventListener('click', function() {
             window.scrollTo({ top: 0, behavior: 'smooth' });
         });
 
-        // Shell 终端化渲染：将代码按行分析，渲染为 404 同款终端风格
+        // ---- LED 阅读进度条 ----
+        var ledBar = document.getElementById('ledProgressBar');
+        if (ledBar) {
+            var updateLed = function() {
+                var doc = document.documentElement;
+                var total = doc.scrollHeight - doc.clientHeight;
+                var pct = total > 0 ? (window.scrollY / total) * 100 : 0;
+                ledBar.style.width = pct + '%';
+            };
+            window.addEventListener('scroll', updateLed, { passive: true });
+            updateLed();
+        }
+
+        // ---- scramble / decode：hover 时字符乱码解码 ----
+        var SCRAMBLE_CHARS = '!<>-_\\/[]{}=+*^?#01';
+        function scramble(el) {
+            if (reducedMotion) return;
+            var original = el.dataset.original || el.textContent;
+            el.dataset.original = original;
+            if (el._scrambleTimer) clearInterval(el._scrambleTimer);
+
+            var frame = 0;
+            var chars = Array.from(original);
+            // 中文等宽字符直接逐步锁定，ASCII 参与乱码
+            el._scrambleTimer = setInterval(function() {
+                var out = '';
+                var done = true;
+                for (var i = 0; i < chars.length; i++) {
+                    var revealAt = i * 2 + 3;
+                    if (frame >= revealAt) {
+                        out += chars[i];
+                    } else {
+                        done = false;
+                        out += /[\x20-\x7E]/.test(chars[i])
+                            ? SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)]
+                            : chars[i];
+                    }
+                }
+                el.textContent = out;
+                frame++;
+                if (done) {
+                    clearInterval(el._scrambleTimer);
+                    el._scrambleTimer = null;
+                    el.textContent = original;
+                }
+            }, 30);
+        }
+
+        document.querySelectorAll('[data-scramble]').forEach(function(el) {
+            el.addEventListener('mouseenter', function() { scramble(el); });
+        });
+
+        // ---- 工具：HTML 转义 ----
+        function escapeHtml(text) {
+            var div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // ---- shell 代码按行渲染为终端风格 ----
         function renderShellTerminal(code, terminalBody) {
             var text = code.textContent || code.innerText || '';
             var lines = text.split('\n');
@@ -103,74 +147,109 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit;
                     html += '<div class="terminal-line">&nbsp;</div>';
                     return;
                 }
-
                 var trimmed = line.trimStart();
                 var leadingSpaces = line.substring(0, line.length - trimmed.length);
                 var indent = leadingSpaces.replace(/ /g, '&nbsp;').replace(/\t/g, '&nbsp;&nbsp;&nbsp;&nbsp;');
 
-                // Error line
                 if (trimmed.match(/^(Error|error|ERROR|ERR|WARN|WARNING|FATAL|FAIL|Failed|failed)\b/)) {
                     html += '<div class="terminal-line">' + indent + '<span class="terminal-error">' + escapeHtml(trimmed) + '</span></div>';
                     return;
                 }
-
-                // Shell prompt: [user@host path]# command or [user@host path]$ command
                 var promptMatch = trimmed.match(/^(\[.*?@.*?\].*?[#$])(\s+.*)?$/);
                 if (promptMatch) {
-                    var prompt = escapeHtml(promptMatch[1]);
-                    var command = promptMatch[2] ? escapeHtml(promptMatch[2]) : '';
                     html += '<div class="terminal-line">' + indent +
-                        '<span class="terminal-prompt">' + prompt + '</span>' +
-                        (command ? '<span class="terminal-command">' + command + '</span>' : '') +
+                        '<span class="terminal-prompt">' + escapeHtml(promptMatch[1]) + '</span>' +
+                        (promptMatch[2] ? '<span class="terminal-command">' + escapeHtml(promptMatch[2]) + '</span>' : '') +
                         '</div>';
                     return;
                 }
-
-                // Simple $ prompt: $ command
                 var simplePromptMatch = trimmed.match(/^(\$)(\s+.*)?$/);
                 if (simplePromptMatch) {
-                    var sprompt = escapeHtml(simplePromptMatch[1]);
-                    var scmd = simplePromptMatch[2] ? escapeHtml(simplePromptMatch[2]) : '';
                     html += '<div class="terminal-line">' + indent +
-                        '<span class="terminal-prompt">' + sprompt + '</span>' +
-                        (scmd ? '<span class="terminal-command">' + scmd + '</span>' : '') +
+                        '<span class="terminal-prompt">$</span>' +
+                        (simplePromptMatch[2] ? '<span class="terminal-command">' + escapeHtml(simplePromptMatch[2]) + '</span>' : '') +
                         '</div>';
                     return;
                 }
-
-                // Comment line starting with #
                 if (trimmed.match(/^#/)) {
                     html += '<div class="terminal-line">' + indent + '<span class="terminal-comment">' + escapeHtml(trimmed) + '</span></div>';
                     return;
                 }
-
-                // Default: output
                 html += '<div class="terminal-line">' + indent + '<span class="terminal-output">' + escapeHtml(trimmed) + '</span></div>';
             });
 
             terminalBody.innerHTML = html;
         }
 
-        function escapeHtml(text) {
-            var div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
+        // ---- 复制按钮（小键帽） ----
+        function createCopyButton(code) {
+            var btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'terminal-copy';
+            btn.textContent = 'copy';
+            btn.addEventListener('click', function() {
+                var text = code.textContent || code.innerText || '';
+                var done = function() {
+                    btn.textContent = 'copied';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.textContent = 'copy';
+                        btn.classList.remove('copied');
+                    }, 1600);
+                };
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(text).then(done, done);
+                } else {
+                    var ta = document.createElement('textarea');
+                    ta.value = text;
+                    document.body.appendChild(ta);
+                    ta.select();
+                    try { document.execCommand('copy'); } catch (e) {}
+                    document.body.removeChild(ta);
+                    done();
+                }
+            });
+            return btn;
         }
 
-        // 代码块终端化 + 高亮
+        // ---- 非 shell 代码：逐行高亮 + 磷光绿行号 ----
+        function renderNumberedCode(code, pre) {
+            var text = code.textContent || code.innerText || '';
+            var lines = text.replace(/\n$/, '').split('\n');
+            var lang = 'plaintext';
+            var m = code.className.match(/language-(\w+)/);
+            if (m && window.hljs && hljs.getLanguage(m[1])) lang = m[1];
+
+            var html = '';
+            lines.forEach(function(line) {
+                var content;
+                if (window.hljs && line.trim().length > 0) {
+                    try {
+                        content = hljs.highlight(line, { language: lang, ignoreIllegals: true }).value;
+                    } catch (e) {
+                        content = escapeHtml(line);
+                    }
+                } else {
+                    content = escapeHtml(line) || '&nbsp;';
+                }
+                html += '<span class="code-line">' + content + '</span>';
+            });
+            code.innerHTML = html;
+            code.classList.add('hljs');
+            pre.setAttribute('data-numbered', '1');
+        }
+
+        // ---- 代码块终端化 ----
         function terminalizeCodeBlocks() {
             var codeBlocks = document.querySelectorAll('.post-content pre, .page-content pre');
-            
+
             codeBlocks.forEach(function(pre) {
-                // Skip if already processed
                 if (pre.parentElement && pre.parentElement.classList.contains('code-terminal')) {
                     return;
                 }
-
                 var code = pre.querySelector('code');
                 if (!code) return;
 
-                // Detect language from class
                 var lang = 'text';
                 var classMatch = code.className.match(/language-(\w+)/);
                 if (classMatch) {
@@ -181,62 +260,45 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit;
 
                 var isShell = (lang === 'bash' || lang === 'shell' || lang === 'sh' || lang === 'zsh');
 
-                // Create terminal wrapper
                 var terminal = document.createElement('div');
                 terminal.className = 'code-terminal';
 
-                // Terminal header
                 var header = document.createElement('div');
                 header.className = 'terminal-header';
                 var titleText = isShell ? 'kjifds@cybergeek: ~' : lang;
-                header.innerHTML = 
+                header.innerHTML =
                     '<span class="terminal-dot red"></span>' +
                     '<span class="terminal-dot yellow"></span>' +
                     '<span class="terminal-dot green"></span>' +
                     '<span class="terminal-title">' + titleText + '</span>';
+                header.appendChild(createCopyButton(code));
 
-                // For shell blocks: replace pre with terminal-body div
+                pre.parentNode.insertBefore(terminal, pre);
+                terminal.appendChild(header);
+
                 if (isShell) {
-                    // Create terminal body
                     var terminalBody = document.createElement('div');
                     terminalBody.className = 'terminal-body';
                     renderShellTerminal(code, terminalBody);
-
-                    // Replace pre with terminal structure
-                    pre.parentNode.insertBefore(terminal, pre);
-                    terminal.appendChild(header);
                     terminal.appendChild(terminalBody);
-                    pre.style.display = 'none';
-                    // Keep pre in DOM for accessibility/fallback, but hide it
+                    pre.style.display = 'none'; // 保留在 DOM 中用于复制与降级
                     terminal.appendChild(pre);
                 } else {
-                    // Non-shell: standard terminal wrapper + highlight.js
-                    pre.parentNode.insertBefore(terminal, pre);
-                    terminal.appendChild(header);
+                    renderNumberedCode(code, pre);
                     terminal.appendChild(pre);
-
-                    // Apply highlight.js
-                    if (window.hljs && !code.classList.contains('hljs')) {
-                        hljs.highlightElement(code);
-                    }
                 }
             });
         }
 
-        // Run terminalize after highlight.js loads
         if (window.hljs) {
-            hljs.configure({ ignoreUnescapedHTML: true });
             terminalizeCodeBlocks();
         } else {
-            // Wait for highlight.js to load
             var checkHljs = setInterval(function() {
                 if (window.hljs) {
                     clearInterval(checkHljs);
-                    hljs.configure({ ignoreUnescapedHTML: true });
                     terminalizeCodeBlocks();
                 }
             }, 100);
-            // Timeout after 5 seconds
             setTimeout(function() {
                 clearInterval(checkHljs);
                 terminalizeCodeBlocks();
