@@ -41,7 +41,7 @@ v1 是"极客风"，v2 MAX 是"把一台复古工作站搬到浏览器里"：页
 ## 技术
 
 - 动画几乎全部 CSS（keyframes + 伪元素）；JS 仅用于 scramble / 行号高亮 / 复制 / 进度条
-- 依赖仅 highlight.js CDN 与 Google Fonts（Inter + JetBrains Mono）
+- 零外部 CDN 依赖：highlight.js 已自托管为单文件 `hljs.min.js`，字体全部使用系统栈；仅公安备案图标在配置备案号后外链加载
 - Typecho 1.3.0 模板 API 兼容，`$this->` 调用方式不变
 - `functions.php` 保留 `getReadingTime()`（中文按字数、英文按词数估算）
 
