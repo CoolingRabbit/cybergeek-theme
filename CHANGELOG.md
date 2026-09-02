@@ -9,7 +9,7 @@
 - **highlight.js 自托管**：core + 9 种常用语言合并为单文件 `hljs.min.js`，`defer` 加载，不再依赖 cdnjs
 - **备案号改为配置项**：页脚 ICP / 公安备案号改读外观设置 `beian` / `beianGov`，留空则整块不输出；公安备案链接自动提取数字 recordcode
 - **样式缓存破坏自动化**：`style.css` / `hljs.min.js` 版本号改用 `filemtime`（新增 `cgAssetVer()`），免手动维护
-- **外观设置默认值清空**：`logoText` / `heroTitle` / `beian` 默认空串；`logoText` 留空回退站点标题，`heroTitle` 留空回退站点标题
+- **外观设置精简**：移除从未生效的 `logoText` / `heroTitle` 摆设字段（导航与 Hero 标题直接跟随「站点名称」），`beian` 默认值清空
 
 ### Fixed
 - 分类名与缩略图 URL 输出统一 `htmlspecialchars(ENT_QUOTES)` 转义（index / archive）

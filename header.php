@@ -63,8 +63,8 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit;
                 <span></span>
             </button>
 
-            <!-- 站点标识：终端提示符 + 闪烁光标；logoText 留空时回退站点标题 -->
-            <a href="<?php $this->options->siteUrl(); ?>" class="nav-brand"><span class="prompt">&gt;</span><?php $cgLogoText = $this->options->logoText; echo htmlspecialchars(!empty($cgLogoText) ? $cgLogoText : $this->options->title); ?></a>
+            <!-- 站点标识：终端提示符 + 闪烁光标（文字跟随「设置 → 基本 → 站点名称」） -->
+            <a href="<?php $this->options->siteUrl(); ?>" class="nav-brand"><span class="prompt">&gt;</span><?php $this->options->title(); ?></a>
 
             <ul class="nav-menu" id="navMenu">
                 <li><a href="<?php $this->options->siteUrl(); ?>" data-scramble>首页</a></li>

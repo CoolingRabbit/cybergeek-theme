@@ -10,12 +10,6 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit;
  * 主题初始化
  */
 function themeConfig($form) {
-    $logoText = new \Typecho\Widget\Helper\Form\Element\Text('logoText', NULL, '', _t('站点 Logo 文字'), _t('显示在导航栏左侧；留空则使用站点标题'));
-    $form->addInput($logoText);
-
-    $heroTitle = new \Typecho\Widget\Helper\Form\Element\Text('heroTitle', NULL, '', _t('Hero 区域大标题'), _t('首页 Nixie 辉光管标题；留空则使用站点标题'));
-    $form->addInput($heroTitle);
-
     $beian = new \Typecho\Widget\Helper\Form\Element\Text('beian', NULL, '', _t('ICP 备案号'), _t('如「沪ICP备xxxxxxxx号-1」；留空则页脚不显示备案信息'));
     $form->addInput($beian);
 

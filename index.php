@@ -6,11 +6,10 @@
 if (!defined('__TYPECHO_ROOT_DIR__')) exit;
 $this->need('header.php');
 
-// 把 Hero 标题拆成独立字符，生成"每根管子"并错开闪烁节奏
-// 优先读外观设置 heroTitle，留空回退站点标题
+// 把站点标题拆成独立字符，生成"每根管子"并错开闪烁节奏
+// Hero 标题直接跟随「设置 → 基本 → 站点名称」
 // 注意：必须用属性访问取值；$this->options->title() 方法会直接 echo 导致文本泄漏到页首
-$cgHeroTitle = $this->options->heroTitle;
-$siteTitle = !empty($cgHeroTitle) ? $cgHeroTitle : $this->options->title;
+$siteTitle = $this->options->title;
 $titleChars = preg_split('//u', $siteTitle, -1, PREG_SPLIT_NO_EMPTY);
 ?>
 
