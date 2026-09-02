@@ -1,5 +1,22 @@
 # Changelog
 
+## [2.0.1] - 2026-09-02
+
+审查修复版：外部资源本地化、配置项接活、个人信息移出代码。
+
+### Changed
+- **移除 Google Fonts**：字体改用系统栈直出（`ui-monospace` / 系统中文字体栈），消除大陆环境首屏渲染阻塞
+- **highlight.js 自托管**：core + 9 种常用语言合并为单文件 `hljs.min.js`，`defer` 加载，不再依赖 cdnjs
+- **备案号改为配置项**：页脚 ICP / 公安备案号改读外观设置 `beian` / `beianGov`，留空则整块不输出；公安备案链接自动提取数字 recordcode
+- **样式缓存破坏自动化**：`style.css` / `hljs.min.js` 版本号改用 `filemtime`（新增 `cgAssetVer()`），免手动维护
+- **外观设置默认值清空**：`logoText` / `heroTitle` / `beian` 默认空串；`logoText` 留空回退站点标题，`heroTitle` 留空回退站点标题
+
+### Fixed
+- 分类名与缩略图 URL 输出统一 `htmlspecialchars(ENT_QUOTES)` 转义（index / archive）
+- 移除 `pageLink` 被内核静默忽略的第三参数（class 实际由 `a.prev/a.next` 选择器接管）
+- `getThumbnail` 正则同时匹配单引号 `src='...'`
+- 404 与代码终端标题中的个人站点名中性化为 `guest@cybergeek`
+
 ## [2.0.0] - 2026-07-20
 
 极繁炫技版重构：整站即一台复古工作站。加载 = 开机，页面 = 屏幕，分页 = 键盘，代码 = 终端，404 = 失败的 curl。
@@ -42,7 +59,7 @@
 - **CRT 显示器不再限制高度** — 移除 `.crt-content` 的 `max-height: 900px` 和 `overflow-y: auto`，5 个卡片完整显示，不再触发内部滚动，整页滚动更顺滑
 
 ### Added
-- **备案信息展示** — 页脚添加 ICP 备案号（沪ICP备2026023383号-1）和公安备案号（沪公网安备31010702010416号），带官方图标
+- **备案信息展示** — 页脚添加 ICP 备案号与公安备案号展示位（v2.0.1 起改为外观设置配置项），带官方图标
 - **键盘风格分页** — 首页分页改为 CRT 终端键盘按键样式，带键帽立体感和悬停/按下交互
 - **CRT 终端代码块** — Shell 代码块渲染为终端窗口样式，带彩色提示符、命令高亮
 

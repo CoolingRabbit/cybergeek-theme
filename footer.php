@@ -14,27 +14,27 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit;
             <div class="footer-status"><span class="prompt">&gt;</span> session.active <span class="ok">[OK]</span> — uptime <?php echo date('Y'); ?> · cybergeek v2 max</div>
             <div class="footer-content">
                 <p>&copy; <?php echo date('Y'); ?> <a href="<?php $this->options->siteUrl(); ?>"><?php $this->options->title(); ?></a>. All rights reserved.</p>
+                <?php
+                $cgBeian = $this->options->beian;
+                $cgBeianGov = $this->options->beianGov;
+                if (!empty($cgBeian) || !empty($cgBeianGov)): ?>
                 <p class="footer-beian">
-                    <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener">沪ICP备2026023383号-1</a>
-                    <span class="beian-sep">|</span>
+                    <?php if (!empty($cgBeian)): ?>
+                    <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener"><?php echo htmlspecialchars($cgBeian, ENT_QUOTES, 'UTF-8'); ?></a>
+                    <?php endif; ?>
+                    <?php if (!empty($cgBeian) && !empty($cgBeianGov)): ?><span class="beian-sep">|</span><?php endif; ?>
+                    <?php if (!empty($cgBeianGov)): ?>
                     <img src="https://beian.mps.gov.cn/web/assets/logo01.6189a29f.png" alt="" class="beian-icon">
-                    <a href="https://www.beian.gov.cn/portal/registerSystemInfo?recordcode=31010702010416" target="_blank" rel="noopener">沪公网安备31010702010416号</a>
+                    <a href="https://www.beian.gov.cn/portal/registerSystemInfo?recordcode=<?php echo preg_replace('/\D/', '', $cgBeianGov); ?>" target="_blank" rel="noopener"><?php echo htmlspecialchars($cgBeianGov, ENT_QUOTES, 'UTF-8'); ?></a>
+                    <?php endif; ?>
                 </p>
+                <?php endif; ?>
             </div>
         </div>
     </footer>
 
-    <!-- Highlight.js（样式由主题 style.css 内嵌配色接管） -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/php.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/javascript.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/css.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/json.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/yaml.min.js"></script>
+    <!-- Highlight.js 自托管合并版（core + 常用语言，单文件 defer 加载）；样式由主题 style.css 内嵌配色接管 -->
+    <script src="<?php $this->options->themeUrl('hljs.min.js'); ?>?v=<?php echo cgAssetVer('hljs.min.js'); ?>" defer></script>
 
     <script>
     (function() {
@@ -265,7 +265,7 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit;
 
                 var header = document.createElement('div');
                 header.className = 'terminal-header';
-                var titleText = isShell ? 'kjifds@cybergeek: ~' : lang;
+                var titleText = isShell ? 'guest@cybergeek: ~' : lang;
                 header.innerHTML =
                     '<span class="terminal-dot red"></span>' +
                     '<span class="terminal-dot yellow"></span>' +

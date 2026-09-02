@@ -4,7 +4,7 @@
 
 - **主题名称**: CyberGeek v2 MAX
 - **博客系统**: Typecho 1.3.0
-- **适用站点**: 散热野兔（https://kjifds.top）
+- **适用站点**: 通用（技术博客 / 知识库型站点）
 - **定位**: 硬件极客桌面世界观——整页 CRT + Nixie 辉光管 + 机械键盘的极繁炫技主题
 
 ## 2. 设计原则
@@ -37,14 +37,14 @@
 ## 4. 字体
 
 ```css
---font-sans: "Inter", -apple-system, "Segoe UI",
+--font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI",
              "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei",
              "Noto Sans SC", sans-serif;
---font-mono: "JetBrains Mono", "SF Mono", "Fira Code",
-             "Cascadia Code", Consolas, monospace;
+--font-mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo,
+             "Cascadia Code", Consolas, "Liberation Mono", monospace;
 ```
 
-- 正文/标题 sans；UI/元信息/代码/Nixie mono。中文不使用斜体。
+- 系统字体栈直出，不加载任何远程字体；正文/标题 sans；UI/元信息/代码/Nixie mono。中文不使用斜体。
 
 ## 5. 排版底线
 
@@ -100,5 +100,5 @@ PHP 将站点标题拆成字符（属性访问 `$this->options->title` 取值，
 ## 9. 输出要求
 
 - UTF-8 无 BOM；Typecho 1.3.0 模板 API 兼容。
-- 外部依赖：Google Fonts（Inter + JetBrains Mono）、highlight.js CDN、公安备案图标。
+- 外部依赖：仅公安备案图标（beian.mps.gov.cn，仅配置公安备案号时加载）；highlight.js 已自托管为单文件 `hljs.min.js`；字体全部使用系统栈。
 - 函数增强：`getReadingTime()`（中文 400 字/分，英文 200 词/分）。

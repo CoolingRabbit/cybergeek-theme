@@ -10,14 +10,28 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit;
  * 主题初始化
  */
 function themeConfig($form) {
-    $logoText = new \Typecho\Widget\Helper\Form\Element\Text('logoText', NULL, '散热野兔', _t('站点 Logo 文字'), _t('显示在导航栏左侧'));
+    $logoText = new \Typecho\Widget\Helper\Form\Element\Text('logoText', NULL, '', _t('站点 Logo 文字'), _t('显示在导航栏左侧；留空则使用站点标题'));
     $form->addInput($logoText);
 
-    $heroTitle = new \Typecho\Widget\Helper\Form\Element\Text('heroTitle', NULL, '散热野兔', _t('Hero 区域大标题'));
+    $heroTitle = new \Typecho\Widget\Helper\Form\Element\Text('heroTitle', NULL, '', _t('Hero 区域大标题'), _t('首页 Nixie 辉光管标题；留空则使用站点标题'));
     $form->addInput($heroTitle);
 
-    $beian = new \Typecho\Widget\Helper\Form\Element\Text('beian', NULL, '沪ICP备2026023383号', _t('备案号'));
+    $beian = new \Typecho\Widget\Helper\Form\Element\Text('beian', NULL, '', _t('ICP 备案号'), _t('如「沪ICP备xxxxxxxx号-1」；留空则页脚不显示备案信息'));
     $form->addInput($beian);
+
+    $beianGov = new \Typecho\Widget\Helper\Form\Element\Text('beianGov', NULL, '', _t('公安备案号'), _t('如「沪公网安备xxxxxxxxxxxxxx号」；留空则不显示'));
+    $form->addInput($beianGov);
+}
+
+/**
+ * 静态资源版本号：以文件修改时间做缓存破坏，免手动维护
+ * @param string $file 相对主题根目录的文件名
+ * @return string
+ */
+function cgAssetVer($file) {
+    $path = dirname(__FILE__) . '/' . ltrim($file, '/');
+    $mtime = @filemtime($path);
+    return $mtime ? (string) $mtime : '2';
 }
 
 /**
@@ -69,7 +83,8 @@ function getExcerpt($archive, $length = 120) {
  */
 function getThumbnail($archive) {
     $content = $archive->content;
-    preg_match_all('/<img[^>]+src="([^"]+)"/', $content, $matches);
+    // 同时匹配双引号与单引号的 src，避免单引号写法取不到缩略图
+    preg_match_all('/<img[^>]+src=["\']([^"\']+)["\']/', $content, $matches);
     if (!empty($matches[1][0])) {
         return $matches[1][0];
     }

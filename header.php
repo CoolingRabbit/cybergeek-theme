@@ -16,10 +16,8 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit;
         'author'    =>  _t('%s 发布的文章')
     ), '', ' - '); ?><?php $this->options->title(); ?></title>
     <meta name="description" content="<?php $this->options->description(); ?>">
-    <!-- 等宽/无衬线字体（中文自动回退系统字体栈） -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
-    <link rel="stylesheet" href="<?php $this->options->themeUrl('style.css'); ?>?v=2.0.0">
+    <!-- 字体直接使用系统栈（见 style.css --font-sans / --font-mono），不加载远程字体，避免大陆环境首屏渲染阻塞 -->
+    <link rel="stylesheet" href="<?php $this->options->themeUrl('style.css'); ?>?v=<?php echo cgAssetVer('style.css'); ?>">
     <?php $this->header(); ?>
 </head>
 <body>
@@ -65,8 +63,8 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit;
                 <span></span>
             </button>
 
-            <!-- 站点标识：终端提示符 + 闪烁光标 -->
-            <a href="<?php $this->options->siteUrl(); ?>" class="nav-brand"><span class="prompt">&gt;</span><?php $this->options->title(); ?></a>
+            <!-- 站点标识：终端提示符 + 闪烁光标；logoText 留空时回退站点标题 -->
+            <a href="<?php $this->options->siteUrl(); ?>" class="nav-brand"><span class="prompt">&gt;</span><?php $cgLogoText = $this->options->logoText; echo htmlspecialchars(!empty($cgLogoText) ? $cgLogoText : $this->options->title); ?></a>
 
             <ul class="nav-menu" id="navMenu">
                 <li><a href="<?php $this->options->siteUrl(); ?>" data-scramble>首页</a></li>

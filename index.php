@@ -6,9 +6,11 @@
 if (!defined('__TYPECHO_ROOT_DIR__')) exit;
 $this->need('header.php');
 
-// 把站点标题拆成独立字符，生成"每根管子"并错开闪烁节奏
+// 把 Hero 标题拆成独立字符，生成"每根管子"并错开闪烁节奏
+// 优先读外观设置 heroTitle，留空回退站点标题
 // 注意：必须用属性访问取值；$this->options->title() 方法会直接 echo 导致文本泄漏到页首
-$siteTitle = $this->options->title;
+$cgHeroTitle = $this->options->heroTitle;
+$siteTitle = !empty($cgHeroTitle) ? $cgHeroTitle : $this->options->title;
 $titleChars = preg_split('//u', $siteTitle, -1, PREG_SPLIT_NO_EMPTY);
 ?>
 
@@ -47,7 +49,7 @@ $titleChars = preg_split('//u', $siteTitle, -1, PREG_SPLIT_NO_EMPTY);
                 ?>
                 <article class="post-card" data-category="<?php echo $catColor; ?>">
                     <?php if ($thumb): ?>
-                        <img src="<?php echo $thumb; ?>" alt="<?php $this->title(); ?>" class="post-card-thumbnail" loading="lazy">
+                        <img src="<?php echo htmlspecialchars($thumb, ENT_QUOTES, 'UTF-8'); ?>" alt="<?php $this->title(); ?>" class="post-card-thumbnail" loading="lazy">
                     <?php endif; ?>
                     <div class="post-card-body">
                         <h2 class="post-card-title">
@@ -58,7 +60,7 @@ $titleChars = preg_split('//u', $siteTitle, -1, PREG_SPLIT_NO_EMPTY);
                             <time datetime="<?php $this->date('c'); ?>"><?php $this->date('Y-m-d'); ?></time>
                             <?php if ($catName): ?>
                                 <span class="separator">/</span>
-                                <span class="cat-tag"><?php echo $catName; ?></span>
+                                <span class="cat-tag"><?php echo htmlspecialchars($catName, ENT_QUOTES, 'UTF-8'); ?></span>
                             <?php endif; ?>
                             <span class="separator">/</span>
                             <span><?php echo getReadingTime($this); ?></span>
@@ -79,7 +81,8 @@ $titleChars = preg_split('//u', $siteTitle, -1, PREG_SPLIT_NO_EMPTY);
         ?>
         <div class="pagination-keyboard">
             <?php if ($currentPage > 1): ?>
-                <?php $this->pageLink('←', 'prev', array('class' => 'page-key page-key-nav')); ?>
+                <?php // pageLink 内核仅接受 2 个参数；键帽样式由 style.css 的 a.prev/a.next 选择器接管
+                $this->pageLink('←', 'prev'); ?>
             <?php else: ?>
                 <span class="page-key page-key-nav page-key-disabled">←</span>
             <?php endif; ?>
@@ -87,7 +90,7 @@ $titleChars = preg_split('//u', $siteTitle, -1, PREG_SPLIT_NO_EMPTY);
             <span class="page-key page-key-current"><?php echo $currentPage; ?></span>
 
             <?php if ($currentPage < $totalPage): ?>
-                <?php $this->pageLink('→', 'next', array('class' => 'page-key page-key-nav')); ?>
+                <?php $this->pageLink('→', 'next'); ?>
             <?php else: ?>
                 <span class="page-key page-key-nav page-key-disabled">→</span>
             <?php endif; ?>

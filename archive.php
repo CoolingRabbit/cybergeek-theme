@@ -35,7 +35,7 @@ $this->need('header.php');
                 ?>
                 <article class="post-card">
                     <?php if ($thumb): ?>
-                        <img src="<?php echo $thumb; ?>" alt="<?php $this->title(); ?>" class="post-card-thumbnail" loading="lazy">
+                        <img src="<?php echo htmlspecialchars($thumb, ENT_QUOTES, 'UTF-8'); ?>" alt="<?php $this->title(); ?>" class="post-card-thumbnail" loading="lazy">
                     <?php endif; ?>
                     <div class="post-card-body">
                         <h2 class="post-card-title">
@@ -46,7 +46,7 @@ $this->need('header.php');
                             <time datetime="<?php $this->date('c'); ?>"><?php $this->date('Y-m-d'); ?></time>
                             <?php if ($catName): ?>
                                 <span class="separator">/</span>
-                                <span class="cat-tag"><?php echo $catName; ?></span>
+                                <span class="cat-tag"><?php echo htmlspecialchars($catName, ENT_QUOTES, 'UTF-8'); ?></span>
                             <?php endif; ?>
                             <span class="separator">/</span>
                             <span><?php echo getReadingTime($this); ?></span>

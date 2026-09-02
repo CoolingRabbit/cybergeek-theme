@@ -12,7 +12,7 @@ $this->need('header.php');
             <span class="terminal-dot red"></span>
             <span class="terminal-dot yellow"></span>
             <span class="terminal-dot green"></span>
-            <span class="terminal-title">kjifds@cybergeek: ~</span>
+            <span class="terminal-title">guest@cybergeek: ~</span>
         </div>
         <div class="terminal-body">
             <div class="terminal-line">
